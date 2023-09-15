@@ -1,6 +1,8 @@
 // TODO: remove this when you're done with your implementation.
 #![allow(unused_imports, unused_variables, dead_code)]
 
+const LINE_WIDTH: i32 = 45;
+
 pub trait Widget {
     /// Natural width of `self`.
     fn width(&self) -> usize;
@@ -67,34 +69,47 @@ impl Window {
     }
 }
 
-
 impl Widget for Label {
     fn width(&self) -> usize {
-        unimplemented!()
+        self.label.len()
     }
 
     fn draw_into(&self, buffer: &mut dyn std::fmt::Write) {
-        unimplemented!()
+        buffer.write_str(&format!("{:^45}", self.label)).unwrap();
     }
 }
 
 impl Widget for Button {
     fn width(&self) -> usize {
-        unimplemented!()
+        self.label.width()
     }
 
     fn draw_into(&self, buffer: &mut dyn std::fmt::Write) {
-        unimplemented!()
+        let data = &self.label.label;
+        buffer.write_str(&format!("+{:=^20}+\n", "=")).unwrap();
+        buffer
+            .write_str(&format!("|{:^20}|\n", self.label.label))
+            .unwrap();
+        buffer.write_str(&format!("+{:=^20}+\n", "=")).unwrap();
     }
 }
 
 impl Widget for Window {
     fn width(&self) -> usize {
-        unimplemented!()
+        self.title.len()
     }
 
     fn draw_into(&self, buffer: &mut dyn std::fmt::Write) {
-        unimplemented!()
+        buffer.write_str(&format!("+{:=^45}+\n", "=")).unwrap();
+        buffer
+            .write_str(&format!("|{:^45}|\n", self.title))
+            .unwrap();
+        buffer.write_str(&format!("+{:=^45}+\n", "=")).unwrap();
+        for widget in &self.widgets {
+            buffer.write_str("| ").unwrap();
+            widget.draw_into(buffer);
+            buffer.write_str(" |\n").unwrap();
+        }
     }
 }
 
